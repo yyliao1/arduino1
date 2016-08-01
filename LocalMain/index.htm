@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+ <meta http-equiv = "Content-Type" content = "text/html; charset=utf-8" /> 
+ <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+<body>
+
+<h1>Customers</h1>
+<div id="id01"></div>
+
+<script type = "text/javascript" > 
+    function contentLoaded( ) { 
+      if ( window.WebSocket ) { 
+      //  alert( "browser support WebSocket" ); 
+      } else { 
+        alert( "browser not support WebSocket " ); 
+      } 
+    } 
+    
+var xmlhttp = new XMLHttpRequest();
+var url = "http://192.168.1.168/ntcentSelect.php";
+
+var myText = document.getElementById("id01");
+
+xmlhttp.onreadystatechange=function() {
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        myFunction(xmlhttp.responseText);
+    }
+}
+xmlhttp.open("GET", url, true);
+xmlhttp.send();
+
+function openSocket(hostIP,PowerOn ) { 
+     //alert("AAAA");
+     var msg1;
+      var s="ws://" + hostIP + ":81";
+      var socket = new WebSocket(s);
+
+      socket.onopen = function ( ) { 
+      // alert( "Create connection !  state : " + socket.readyState ); 
+        socket.send(PowerOn); 
+        socket.close();
+       // alert(s); 
+       // alert(PowerOn);
+      };
+      socket.onmessage = function ( event ) { 
+              var msg = event.data; 
+           
+           //  alert( "received the mess.." + msg ); 
+      }; 
+      
+      socket.onclose = function ( event ) { 
+       // alert( "connection close... state :" + socket.readyState );     
+      }; 
+      socket.onerror = function ( event ) { 
+       // alert( "error occurance ~ : " + event.data ); 
+      }; 
+    } 
+    window.addEventListener( "DOMContentLoaded", contentLoaded , false ); 
+
+function myFunction(response) {
+    var arr = JSON.parse(response);
+    var urlPower;
+    var urlMyIP="http://whatismyipaddress.com/zh-cn/index/"
+    var i;
+    var out = "<table border=1>";
+        out += "<tr><td>Entity</td><td>Location</td><td>State</td><td>Power</td><td>Link</td></tr>"
+    for(i = 0; i < arr.length; i++) {
+        urlPower=arr[i].hostname
+        out += "<tr><td>" +
+        arr[i].entity +
+        "</td><td>" +
+        arr[i].location +
+        "</td><td>" +
+        arr[i].state +
+        "<td><input id =text1 type =button value =ON onclick=openSocket(\"" + urlPower + "\",\"G51\") />" + 
+        "<input id =text2 type =button value =OFF onclick=openSocket(\"" + urlPower + "\",\"G50\") /> </td>" +
+        "<td><a href=http://" + urlPower + "><button>More</button></a></td>" +
+        "</td></tr>";
+    }
+    out += "</table>";
+    document.getElementById("id01").innerHTML = out;
+}
+
+ 
+
+</script>
+
+</body>
+</html>
