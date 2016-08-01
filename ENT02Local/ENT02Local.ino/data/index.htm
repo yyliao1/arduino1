@@ -1,0 +1,46 @@
+<!DOCTYPE html> 
+<html xmlns = "http://www.w3.org/1999/xhtml"> 
+<head> 
+  <meta http-equiv = "Content-Type" content = "text/html; charset=utf-8" /> 
+  <title> WebSocket Demo</title> 
+  <script type = "text/javascript" > 
+    function contentLoaded( ) { 
+      if ( window.WebSocket ) { 
+      //  alert( "browser support WebSocket" ); 
+      } else { 
+        alert( "browser not support WebSocket " ); 
+      } 
+    } 
+    function openSocket( ) { 
+     var msg1;
+     // var socket = new WebSocket( "ws://echo.websocket.org/" ); 
+     var s=document.getElementById("server1").value;
+     var socket = new WebSocket( s ); 
+     var v=document.getElementById("text1").value;
+      socket.onopen = function ( ) { 
+       // alert( "Create connection !  state : " + socket.readyState ); 
+        socket.send( v ); 
+       // alert( "Message sending ..." ); 
+      };
+      socket.onmessage = function ( event ) { 
+              var msg = event.data; 
+             // msg1 = msg;
+            // alert( "received the mess.." + msg ); 
+      }; 
+      
+      socket.onclose = function ( event ) { 
+        alert( "connection close... state :" + socket.readyState );     
+      }; 
+      socket.onerror = function ( event ) { 
+        alert( "error occurance ~ : " + event.data ); 
+      }; 
+    } 
+    window.addEventListener( "DOMContentLoaded", contentLoaded , false ); 
+  </script> 
+</head> 
+<body> 
+  <input id = "server1" type "text" value="ws://192.168.1.112:81/" />
+ <input id = "text1" type "text" value="G51" />
+  <input id = "bt1" type = "button" value ="G51" onclick="openSocket()" /> 
+</body> 
+</html>
